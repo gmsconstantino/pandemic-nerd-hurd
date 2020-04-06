@@ -132,7 +132,7 @@ func (p *PandemicView) renderCityDeckAndTurns(game *pandemic.GameState, gui *goc
 	}
 
 	// print all cards
-	fmt.Fprint(turnView, "Cards: ")
+	fmt.Fprintf(turnView, "Cards (%v):", len(cur.Player.Cards))
 	for _, card := range cur.Player.Cards {
 		if card.IsCity() {
 			city, _ := game.Cities.GetCity(card.CityName)
@@ -178,7 +178,7 @@ func (p *PandemicView) iconFor(dt pandemic.DiseaseType) string {
 	case pandemic.Blue.Type:
 		diseaseEmoji = "\U0001f499"
 	case pandemic.Red.Type:
-		diseaseEmoji = "\u2764\ufe0f"
+		diseaseEmoji = "\U0001F6D1"
 	case pandemic.Black.Type:
 		diseaseEmoji = "\u26ab"
 	case pandemic.Faded.Type:
