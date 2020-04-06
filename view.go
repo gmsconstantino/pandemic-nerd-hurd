@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/anthonybishopric/pandemic-nerd-hurd/pandemic"
+	"./pandemic"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 )

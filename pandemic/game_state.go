@@ -7,10 +7,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/anthonybishopric/pandemic-nerd-hurd/pandemic/combinations"
+	"./combinations"
 )
 
-const EpidemicsPerGame = 5
 const CityCardsPerTurn = 2
 
 type GameState struct {
@@ -25,9 +24,10 @@ type GameState struct {
 }
 
 type NewGameSettings struct {
-	Cities       Cities         `json:"cities"`
-	Players      []*Player      `json:"players"`
-	FundedEvents []*FundedEvent `json:"funded_events"`
+	EpidemicsPerGame int            `json:"epidemicspergame"`
+	Cities           Cities         `json:"cities"`
+	Players          []*Player      `json:"players"`
+	FundedEvents     []*FundedEvent `json:"funded_events"`
 }
 
 func NewGame(newGameFile string, gameName string) (*GameState, error) {
@@ -45,18 +45,18 @@ func NewGame(newGameFile string, gameName string) (*GameState, error) {
 
 	excludeFromCityDeck := Set{}
 	for _, player := range players {
-		if len(player.StartCards) != 2 {
-			return nil, fmt.Errorf("Each player must start with 2 city cards")
-		}
+		//if len(player.StartCards) != 2 {
+		//	return nil, fmt.Errorf("Each player must start with 2 city cards")
+		//}
 		for _, cityName := range player.StartCards {
 			excludeFromCityDeck.Add(cityName)
 		}
 	}
-	if len(excludeFromCityDeck) != 2*len(players) {
+	if len(excludeFromCityDeck) != 0 && len(excludeFromCityDeck) != 2*len(players) {
 		return nil, fmt.Errorf("Duplicate cities detected, check the start information: %+v", excludeFromCityDeck)
 	}
 
-	cityDeck, err := cities.GenerateCityDeck(EpidemicsPerGame, newGameSettings.FundedEvents, excludeFromCityDeck)
+	cityDeck, err := cities.GenerateCityDeck(newGameSettings.EpidemicsPerGame, newGameSettings.FundedEvents, excludeFromCityDeck)
 	if err != nil {
 		return nil, err
 	}
@@ -102,9 +102,9 @@ func (gs GameState) ProbabilityOfCuring(player *Player, dt DiseaseType) float64 
 	remainingCards := gs.CityDeck.RemainingCardsWith(dt, gs.Cities)
 	// TODO: make disease curability more programatic
 	totalRequired := 5
-	if dt == Red.Type || dt == Black.Type {
-		totalRequired = 4
-	}
+	//if dt == Red.Type || dt == Black.Type {
+	//	totalRequired = 4
+	//}
 	for _, card := range player.Cards {
 		if !card.IsCity() {
 			continue

@@ -188,6 +188,13 @@ func (c *City) SetInfections(infections int) {
 	c.NumInfections = infections
 }
 
+func (c *City) TreatInfections(infections int) {
+	c.NumInfections -= infections
+	if c.NumInfections < 0 {
+		c.NumInfections = 0
+	}
+}
+
 func (c CityDeck) Total() int {
 	return len(c.All)
 }

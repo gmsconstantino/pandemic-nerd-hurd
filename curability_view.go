@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/anthonybishopric/pandemic-nerd-hurd/pandemic"
+	"./pandemic"
 )
 
 type maxCurability struct {

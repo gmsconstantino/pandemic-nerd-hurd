@@ -42,6 +42,11 @@ func (p *Player) Discard(cardName CardName) error {
 	return nil
 }
 
+func (p *Player) SetLocation(location CityName) error {
+	p.Location = location
+	return nil
+}
+
 type Character struct {
 	Name        string        `json:"name"`
 	Type        CharacterType `json:"type"`

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/anthonybishopric/pandemic-nerd-hurd/pandemic"
+	"./pandemic"
 	"github.com/jroimartin/gocui"
 )
 
@@ -167,7 +167,7 @@ func (p *PandemicView) runCommand(gameState *pandemic.GameState, consoleView *go
 			fmt.Fprintf(consoleView, "infection rate now %v\n", ir)
 			gameState.InfectionRate = int(ir)
 		}
-	case "city-infect-level", "l":
+	case "city-infect-level", "ci":
 		if len(commandArgs) != 3 {
 			fmt.Fprintln(consoleView, p.colorWarning("You must pass a city and infection value"))
 			break
@@ -291,6 +291,31 @@ func (p *PandemicView) runCommand(gameState *pandemic.GameState, consoleView *go
 		}
 		city.TreatInfections(int(il))
 		fmt.Fprintf(consoleView, "Treated %v infections on %v\n", il, city.Name)
+	case "location", "l":
+		if len(commandArgs) != 2 {
+			fmt.Fprintf(consoleView, p.colorWarning("location must be called with a city name"))
+			return nil
+		}
+		cityName, err := getCityByPrefix(commandArgs[1], gameState)
+		if err != nil {
+			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
+			break
+		}
+		curPlayer.SetLocation(cityName)
+	case "help", "h":
+		fmt.Fprintf(consoleView, "Help\n")
+		fmt.Fprintf(consoleView, "infect                  i\n")
+		fmt.Fprintf(consoleView, "next-turn               n\n")
+		fmt.Fprintf(consoleView, "give-card               g\n")
+		fmt.Fprintf(consoleView, "epidemic                e\n")
+		fmt.Fprintf(consoleView, "infect-rate             r\n")
+		fmt.Fprintf(consoleView, "city-infect-level       ci\n")
+		fmt.Fprintf(consoleView, "city-draw               c\n")
+		fmt.Fprintf(consoleView, "quarantine              q\n")
+		fmt.Fprintf(consoleView, "discard                 d\n")
+		fmt.Fprintf(consoleView, "remove-quarantine       rq\n")
+		fmt.Fprintf(consoleView, "save                    s\n")
+		fmt.Fprintf(consoleView, "treat-disease           t\n")
 	default:
 		fmt.Fprintf(consoleView, p.colorWarning(fmt.Sprintf("Unrecognized command %v\n", cmd)))
 		return nil

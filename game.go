@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"./pandemic"
 	"github.com/Sirupsen/logrus"
-	"github.com/anthonybishopric/pandemic-nerd-hurd/pandemic"
 
 	"gopkg.in/alecthomas/kingpin.v2"
 )
