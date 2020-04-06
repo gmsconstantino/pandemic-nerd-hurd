@@ -66,20 +66,35 @@ func (p *PandemicView) runCommand(gameState *pandemic.GameState, consoleView *go
 
 	switch cmd {
 	case "infect", "i":
-		if len(commandArgs) != 2 {
+		if len(commandArgs) < 2 {
 			fmt.Fprintln(consoleView, p.colorWarning("You must pass a city to the infect command."))
 			break
 		}
-		city, err := getCityByPrefix(commandArgs[1], gameState)
+		cityName, err := getCityByPrefix(commandArgs[1], gameState)
 		if err != nil {
 			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
 			break
 		}
-		err = gameState.Infect(city)
+		err = gameState.Infect(cityName)
 		if err != nil {
 			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
 		} else {
-			fmt.Fprintf(consoleView, "Infected %v\n", city)
+			fmt.Fprintf(consoleView, "Infected %v\n", cityName)
+		}
+
+		if len(commandArgs) == 3 {
+			il, err := strconv.ParseInt(commandArgs[2], 10, 32)
+			if err != nil {
+				fmt.Fprintf(consoleView, p.colorWarning(fmt.Sprintf("%v is not a valid infection level\n", commandArgs[1])))
+				break
+			}
+			city, err := gameState.GetCity(cityName)
+			if err != nil {
+				fmt.Fprintf(consoleView, p.colorWarning(fmt.Sprintf("Could not get city %v: %v\n", cityName, err)))
+				break
+			}
+			city.SetInfections(int(il))
+			fmt.Fprintf(consoleView, "Set infection level in %v to %v\n", city.Name, city.NumInfections)
 		}
 	case "next-turn", "n":
 		turn, err := gameState.NextTurn()
@@ -138,7 +153,7 @@ func (p *PandemicView) runCommand(gameState *pandemic.GameState, consoleView *go
 			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
 			break
 		} else {
-			fmt.Fprintf(consoleView, "Epidemic in %v. Please update the infect rate (infect-rate N)\n", city)
+			fmt.Fprintf(consoleView, "Epidemic in %v. Please update the infect rate (infect-rate[r] N)\n", city)
 		}
 	case "infect-rate", "r":
 		if len(commandArgs) != 2 {
@@ -254,6 +269,28 @@ func (p *PandemicView) runCommand(gameState *pandemic.GameState, consoleView *go
 			return nil
 		}
 		fmt.Fprintf(consoleView, "Save succefull\n")
+	case "treat-disease", "t":
+		if len(commandArgs) != 3 {
+			fmt.Fprintf(consoleView, p.colorWarning("treat-disease must be called with a city name and a value"))
+			return nil
+		}
+		cityName, err := getCityByPrefix(commandArgs[1], gameState)
+		if err != nil {
+			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
+			break
+		}
+		city, err := gameState.GetCity(cityName)
+		if err != nil {
+			fmt.Fprintf(consoleView, p.colorWarning(fmt.Sprintf("Could not get city %v: %v\n", cityName, err)))
+			break
+		}
+		il, err := strconv.ParseInt(commandArgs[2], 10, 32)
+		if err != nil {
+			fmt.Fprintf(consoleView, p.colorWarning(fmt.Sprintf("%v is not a valid infection level\n", commandArgs[1])))
+			break
+		}
+		city.TreatInfections(int(il))
+		fmt.Fprintf(consoleView, "Treated %v infections on %v\n", il, city.Name)
 	default:
 		fmt.Fprintf(consoleView, p.colorWarning(fmt.Sprintf("Unrecognized command %v\n", cmd)))
 		return nil
