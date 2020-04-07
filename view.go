@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/Sirupsen/logrus"
 	"./pandemic"
+	"github.com/Sirupsen/logrus"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 )
@@ -119,14 +119,14 @@ func (p *PandemicView) renderCityDeckAndTurns(game *pandemic.GameState, gui *goc
 	}
 	for _, player := range game.GameTurns.PlayerOrder {
 		if cur.Player == player {
-			fmt.Fprint(turnView, p.colorWhiteHighlight(player.HumanName))
+			fmt.Fprint(turnView, p.colorWhiteHighlight(fmt.Sprintf("%v (%v)", player.HumanName, player.Character.Type)))
 		} else {
 			fmt.Fprint(turnView, player.HumanName[:1])
 		}
 		fmt.Fprint(turnView, " ")
 	}
 	fmt.Fprintln(turnView)
-	fmt.Fprintf(turnView, "%v has %v turns left\n", cur.Player.HumanName, game.GameTurns.RemainingTurnsFor(game.CityDeck.RemainingCards(), cur.Player.HumanName))
+	fmt.Fprintf(turnView, "%v [%v] has %v turns left\n", cur.Player.HumanName, cur.Player.Location, game.GameTurns.RemainingTurnsFor(game.CityDeck.RemainingCards(), cur.Player.HumanName))
 	if cur.Player.Character != nil && cur.Player.Character.TurnMessage != "" {
 		fmt.Fprintln(turnView, p.colorAllGood(cur.Player.Character.TurnMessage))
 	}

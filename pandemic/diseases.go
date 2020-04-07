@@ -14,10 +14,10 @@ var Yellow = DiseaseData{
 	Type: DiseaseType("Yellow"),
 }
 var Blue = DiseaseData{
-	Type:          DiseaseType("Blue"),
-	Incurable:     true, // TODO: make configurable with a gamestate
-	Untreatable:   true,
-	BecomingFaded: true,
+	Type: DiseaseType("Blue"),
+	//Incurable:     true, // TODO: make configurable with a gamestate
+	//Untreatable:   true,
+	//BecomingFaded: true,
 }
 var Red = DiseaseData{
 	Type: DiseaseType("Red"),

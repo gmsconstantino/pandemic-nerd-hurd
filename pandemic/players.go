@@ -23,7 +23,7 @@ const (
 type Player struct {
 	HumanName  string     `json:"human_name"`
 	Character  *Character `json:"character"`
-	Location   CityName
+	Location   CityName   `json:"location"`
 	StartCards []CardName `json:"start_cards"`
 	Cards      []*CityCard
 }

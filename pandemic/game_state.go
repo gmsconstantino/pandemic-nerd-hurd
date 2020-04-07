@@ -186,8 +186,43 @@ func (gs GameState) Infect(cn CityName) error {
 		}
 		return nil
 	}
-	// TODO: handle outbreaks
-	city.Infect()
+
+	if city.Infect() {
+		// TODO: handle outbreaks
+		outbreakedCities := Set{}
+		outbreakedCities.Add(city.Name)
+		err := gs.HandleOutbreak(city, &outbreakedCities)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (gs GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
+	for _, neighbor := range city.Neighbors {
+		cityName, err := GetCityByPrefix(neighbor, &gs)
+		if err != nil {
+			return err
+		}
+
+		if outbreakedCities.Contains(cityName) {
+			continue
+		}
+
+		city, err := gs.Cities.GetCity(cityName)
+		if err != nil {
+			return err
+		}
+
+		if city.Infect() {
+			outbreakedCities.Add(city.Name)
+			err := gs.HandleOutbreak(city, outbreakedCities)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
