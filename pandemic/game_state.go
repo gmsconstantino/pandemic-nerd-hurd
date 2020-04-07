@@ -171,32 +171,33 @@ func (gs GameState) ExchangeCard(from, to *Player, name CardName) error {
 	return nil
 }
 
-func (gs GameState) Infect(cn CityName) error {
+func (gs GameState) Infect(cn CityName) (string, error) {
 	err := gs.InfectionDeck.Draw(cn)
 	if err != nil {
-		return err
+		return "", err
 	}
 	city, err := gs.Cities.GetCity(cn)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if city.Quarantined {
 		if !gs.quarantineSpecialistPresent(cn) {
 			city.RemoveQuarantine()
 		}
-		return nil
+		return "", nil
 	}
 
 	if city.Infect() {
-		// TODO: handle outbreaks
+		// handle outbreaks
 		outbreakedCities := Set{}
 		outbreakedCities.Add(city.Name)
 		err := gs.HandleOutbreak(city, &outbreakedCities)
 		if err != nil {
-			return err
+			return "", err
 		}
+		return "Outbreak!!!", nil
 	}
-	return nil
+	return "", nil
 }
 
 func (gs GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
@@ -226,14 +227,14 @@ func (gs GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
 	return nil
 }
 
-func (gs GameState) Epidemic(cn CityName) error {
+func (gs GameState) Epidemic(cn CityName) (string, error) {
 	err := gs.InfectionDeck.PullFromBottom(cn)
 	if err != nil {
-		return err
+		return "", err
 	}
 	err = gs.CityDeck.DrawEpidemic()
 	if err != nil {
-		return err
+		return "", err
 	}
 	city, _ := gs.Cities.GetCity(cn)
 
@@ -242,11 +243,19 @@ func (gs GameState) Epidemic(cn CityName) error {
 			city.RemoveQuarantine()
 		}
 	} else {
-		// TODO: handle outbreak
-		city.Epidemic()
+		if city.Epidemic() {
+			// handle outbreak
+			outbreakedCities := Set{}
+			outbreakedCities.Add(city.Name)
+			err := gs.HandleOutbreak(city, &outbreakedCities)
+			if err != nil {
+				return "", err
+			}
+			return "Outbreak!!!", nil
+		}
 	}
 	gs.InfectionDeck.ShuffleDrawn()
-	return nil
+	return "", nil
 }
 
 func (gs GameState) quarantineSpecialistPresent(cityName CityName) bool {

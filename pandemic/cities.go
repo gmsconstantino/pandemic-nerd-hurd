@@ -172,8 +172,10 @@ func (c *City) Infect() bool {
 	return false
 }
 
-func (c *City) Epidemic() {
+func (c *City) Epidemic() bool {
+	ret := c.NumInfections > 0
 	c.NumInfections = 3
+	return ret
 }
 
 func (c *City) Quarantine() {
