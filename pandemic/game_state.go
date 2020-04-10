@@ -45,15 +45,19 @@ func NewGame(newGameFile string, gameName string) (*GameState, error) {
 
 	excludeFromCityDeck := Set{}
 	for _, player := range players {
-		//if len(player.StartCards) != 2 {
-		//	return nil, fmt.Errorf("Each player must start with 2 city cards")
-		//}
+		if len(player.StartCards) == 0 {
+			continue
+		}
+
+		if len(player.StartCards) != (6 - len(players)) {
+			return nil, fmt.Errorf("Each player must start with %v city cards", 6-len(players))
+		}
 		for _, cityName := range player.StartCards {
 			excludeFromCityDeck.Add(cityName)
 		}
 	}
-	if len(excludeFromCityDeck) != 0 && len(excludeFromCityDeck) != 2*len(players) {
-		return nil, fmt.Errorf("Duplicate cities detected, check the start information: %+v", excludeFromCityDeck)
+	if excludeFromCityDeck.Size() != 0 && len(excludeFromCityDeck) != (6-len(players))*len(players) {
+		return nil, fmt.Errorf("Duplicate cities detected, check the start information (%v): %+v", len(excludeFromCityDeck), excludeFromCityDeck)
 	}
 
 	cityDeck, err := cities.GenerateCityDeck(newGameSettings.EpidemicsPerGame, newGameSettings.FundedEvents, excludeFromCityDeck)
@@ -132,6 +136,20 @@ func (gs GameState) ProbabilityOfCuring(player *Player, dt DiseaseType) float64 
 	return combinations.AtLeastNDraws(allRemaining, drawsRemaining, totalRequired, remainingCards)
 }
 
+func (gs GameState) StartDrawCard(cn CardName) error {
+	curTurn, err := gs.GameTurns.CurrentTurn()
+	if err != nil {
+		return err
+	}
+	card, err := gs.CityDeck.DrawCard(cn)
+	if err != nil {
+		return err
+	}
+	curTurn.DrawnCards = append(curTurn.DrawnCards, card)
+	curTurn.Player.Cards = append(curTurn.Player.Cards, card)
+	return nil
+}
+
 func (gs GameState) DrawCard(cn CardName) error {
 	curTurn, err := gs.GameTurns.CurrentTurn()
 	if err != nil {
@@ -171,7 +189,7 @@ func (gs GameState) ExchangeCard(from, to *Player, name CardName) error {
 	return nil
 }
 
-func (gs GameState) Infect(cn CityName) (string, error) {
+func (gs *GameState) Infect(cn CityName) (string, error) {
 	err := gs.InfectionDeck.Draw(cn)
 	if err != nil {
 		return "", err
@@ -189,6 +207,7 @@ func (gs GameState) Infect(cn CityName) (string, error) {
 
 	if city.Infect() {
 		// handle outbreaks
+		gs.Outbreaks += 1
 		outbreakedCities := Set{}
 		outbreakedCities.Add(city.Name)
 		err := gs.HandleOutbreak(city, &outbreakedCities)
@@ -200,9 +219,9 @@ func (gs GameState) Infect(cn CityName) (string, error) {
 	return "", nil
 }
 
-func (gs GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
+func (gs *GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
 	for _, neighbor := range city.Neighbors {
-		cityName, err := GetCityByPrefix(neighbor, &gs)
+		cityName, err := GetCityByPrefix(neighbor, gs)
 		if err != nil {
 			return err
 		}
@@ -217,6 +236,7 @@ func (gs GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
 		}
 
 		if city.Infect() {
+			gs.Outbreaks += 1
 			outbreakedCities.Add(city.Name)
 			err := gs.HandleOutbreak(city, outbreakedCities)
 			if err != nil {
@@ -227,7 +247,7 @@ func (gs GameState) HandleOutbreak(city *City, outbreakedCities *Set) error {
 	return nil
 }
 
-func (gs GameState) Epidemic(cn CityName) (string, error) {
+func (gs *GameState) Epidemic(cn CityName) (string, error) {
 	err := gs.InfectionDeck.PullFromBottom(cn)
 	if err != nil {
 		return "", err
@@ -245,6 +265,7 @@ func (gs GameState) Epidemic(cn CityName) (string, error) {
 	} else {
 		if city.Epidemic() {
 			// handle outbreak
+			gs.Outbreaks += 1
 			outbreakedCities := Set{}
 			outbreakedCities.Add(city.Name)
 			err := gs.HandleOutbreak(city, &outbreakedCities)
