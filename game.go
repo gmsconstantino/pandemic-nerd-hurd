@@ -6,8 +6,13 @@ import (
 
 	"./pandemic"
 	"github.com/Sirupsen/logrus"
+	"github.com/jroimartin/gocui"
 
 	"gopkg.in/alecthomas/kingpin.v2"
+
+	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -68,5 +73,23 @@ func main() {
 	}
 
 	view := NewView(logger)
-	view.Start(gameState)
+	gui, err := gocui.NewGui(gocui.OutputNormal)
+
+	if err != nil {
+		view.logger.Errorln("Could not init GUI: %v", err)
+	}
+	defer gui.Close()
+
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/", Index)
+	router.HandleFunc("/command", Command(gameState, view, gui))
+	router.HandleFunc("/nextturn", NextTurn(gameState, view, gui))
+
+	// Sub rotine to handle the request from the api
+	go func() {
+		logger.Fatalln(http.ListenAndServe(":8080", router))
+	}()
+
+	view.Start(gameState, gui)
+
 }

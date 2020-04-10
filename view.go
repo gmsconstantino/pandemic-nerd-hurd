@@ -33,13 +33,7 @@ func NewView(logger *logrus.Logger) *PandemicView {
 	}
 }
 
-func (p *PandemicView) Start(game *pandemic.GameState) {
-	gui, err := gocui.NewGui(gocui.OutputNormal)
-
-	if err != nil {
-		p.logger.Errorln("Could not init GUI: %v", err)
-	}
-	defer gui.Close()
+func (p *PandemicView) Start(game *pandemic.GameState, gui *gocui.Gui) {
 
 	gui.SetManagerFunc(func(gui *gocui.Gui) error {
 		width, height := gui.Size()
@@ -74,7 +68,7 @@ func (p *PandemicView) renderCommandsView(game *pandemic.GameState, gui *gocui.G
 
 func (p *PandemicView) renderCityDeckAndTurns(game *pandemic.GameState, gui *gocui.Gui, topX, topY, bottomX, bottomY int) {
 	cityView, err := gui.SetView("Cities", topX, topY, bottomX, topY+(bottomY-topY)/2)
-	p.logger.Infoln(topX, topY, bottomX, topY+(bottomY-topY)/2)
+	//p.logger.Infoln(topX, topY, bottomX, topY+(bottomY-topY)/2)
 	if err != nil && err != gocui.ErrUnknownView {
 		gui.Close()
 		p.logger.Fatalf("Could not render city deck view: %v %v %v %v %v", err, topX, topY, bottomX, topY+(bottomY-topY)/2)
@@ -103,6 +97,7 @@ func (p *PandemicView) renderCityDeckAndTurns(game *pandemic.GameState, gui *goc
 	fmt.Fprintf(cityView, "%v  %v  ", p.iconFor(pandemic.Blue.Type), game.CityDeck.RemainingCardsWith(pandemic.Blue.Type, game.Cities))
 	fmt.Fprintf(cityView, "%v  %v  ", p.iconFor(pandemic.Yellow.Type), game.CityDeck.RemainingCardsWith(pandemic.Yellow.Type, game.Cities))
 	fmt.Fprintf(cityView, "%v  %v\n", p.iconFor(pandemic.Faded.Type), game.CityDeck.RemainingCardsWith(pandemic.Faded.Type, game.Cities))
+	fmt.Fprintf(cityView, "Outbreaks \U0001F4A5  %v\n", game.Outbreaks)
 
 	turnView, err := gui.SetView("Turns", topX, topY+(bottomY-topY)/2, bottomX, bottomY)
 	if err != nil && err != gocui.ErrUnknownView {
