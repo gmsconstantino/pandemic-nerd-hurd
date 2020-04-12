@@ -152,6 +152,23 @@ func (p *PandemicView) runStaticCommand(commandBuffer string, gameState *pandemi
 		}
 		city.SetInfections(int(il))
 		fmt.Fprintf(consoleView, "Set infection level in %v to %v\n", city.Name, city.NumInfections)
+	case "api-city-infect-level", "aci":
+		if len(commandArgs) != 3 {
+			break
+		}
+		il, err := strconv.ParseInt(commandArgs[2], 10, 32)
+		if err != nil {
+			break
+		}
+		cityName, err := pandemic.GetCityByPrefix(commandArgs[1], gameState)
+		if err != nil {
+			break
+		}
+		city, err := gameState.GetCity(cityName)
+		if err != nil {
+			break
+		}
+		city.SetInfections(int(il))
 	case "city-draw", "c":
 		if len(commandArgs) != 2 {
 			fmt.Fprintln(consoleView, p.colorWarning("You must pass a city or funded event name to draw"))
@@ -216,7 +233,7 @@ func (p *PandemicView) runStaticCommand(commandBuffer string, gameState *pandemi
 			fmt.Fprintf(consoleView, "Removed quarantine from %v\n", cityName)
 		}
 	case "save", "s":
-		filename := filepath.Join(gameState.GameName, fmt.Sprintf("game_%v_%v.json", time.Now().UnixNano(), cmd))
+		filename := filepath.Join(gameState.GameName, fmt.Sprintf("game_%v_%v.json", time.Now().Format("20060102_030405"), cmd))
 		err = os.MkdirAll(gameState.GameName, 0755)
 		if err != nil {
 			fmt.Fprintln(consoleView, p.colorOhFuck(fmt.Sprintf("Could not create a game name folder: %v", err)))
@@ -304,6 +321,11 @@ func (p *PandemicView) runStaticCommand(commandBuffer string, gameState *pandemi
 			break
 		}
 		fmt.Fprintf(consoleView, "%v drew %v from city deck\n", curPlayer.HumanName, cardName)
+	case "undo", "u":
+		break
+	case "start":
+		gameState.StartGame()
+		fmt.Fprintf(consoleView, "Game started\n")
 	case "help", "h":
 		fmt.Fprintln(consoleView, "Help")
 		fmt.Fprintln(consoleView, "")

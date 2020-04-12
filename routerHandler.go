@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	"github.com/jroimartin/gocui"
@@ -15,17 +14,39 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello Api Pandemic Nerd Hurd")
 }
 
+type command struct {
+	cmd string
+}
+
 // Command receive the request from game and translates it to this simulator
 func Command(gameState *pandemic.GameState, view *PandemicView, gui *gocui.Gui) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+		/*
+			body, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 
-		cmd := string(body)
+			cmd := string(body)
+		*/
+
+		var cmd string
+
+		switch r.Method {
+		case "GET":
+			http.Error(w, "got GET", http.StatusBadRequest)
+		case "POST":
+			// Call ParseForm() to parse the raw query and update r.PostForm and r.Form.
+			if err := r.ParseForm(); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			cmd = r.FormValue("cmd")
+		default:
+			fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+		}
 
 		consoleView, err := gui.View("Console")
 		//commandView, err := gui.View("Commands")

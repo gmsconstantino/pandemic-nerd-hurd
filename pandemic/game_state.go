@@ -21,6 +21,7 @@ type GameState struct {
 	Outbreaks     int            `json:"outbreaks"`
 	GameName      string         `json:"game_name"`
 	GameTurns     *GameTurns     `json:"game_turns"`
+	IsStarted     bool           `json:"isstarted"`
 }
 
 type NewGameSettings struct {
@@ -85,6 +86,7 @@ func NewGame(newGameFile string, gameName string) (*GameState, error) {
 		Outbreaks:     0,
 		GameName:      gameName,
 		GameTurns:     InitGameTurns(players...),
+		IsStarted:     false,
 	}, nil
 }
 
@@ -145,7 +147,9 @@ func (gs GameState) StartDrawCard(cn CardName) error {
 	if err != nil {
 		return err
 	}
-	curTurn.DrawnCards = append(curTurn.DrawnCards, card)
+	//curTurn.DrawnCards = append(curTurn.DrawnCards, card)
+	//curTurn.Player.Cards = append(curTurn.Player.Cards, card)
+	curTurn.Player.StartCards = append(curTurn.Player.StartCards, cn)
 	curTurn.Player.Cards = append(curTurn.Player.Cards, card)
 	return nil
 }
@@ -155,7 +159,7 @@ func (gs GameState) DrawCard(cn CardName) error {
 	if err != nil {
 		return err
 	}
-	if len(curTurn.DrawnCards) == CityCardsPerTurn {
+	if gs.IsStarted && len(curTurn.DrawnCards) == CityCardsPerTurn {
 		return fmt.Errorf("%v has already drawn %v cards this turn.", curTurn.Player.HumanName, CityCardsPerTurn)
 	}
 	card, err := gs.CityDeck.DrawCard(cn)
@@ -378,6 +382,10 @@ func (gs *GameState) SortBySeverity(names []CityName) []CityName {
 	b := bySeverity{names, gs}
 	sort.Sort(&b)
 	return b.names
+}
+
+func (gs *GameState) StartGame() {
+	gs.IsStarted = true
 }
 
 type bySeverity struct {
