@@ -3,109 +3,119 @@
     "players": [
         {
             "human_name": "Will",
-            "start_cards": ["chennai", "delhi"],
+            "location": "atlanta",
+            "start_cards": [],
             "character": {
-                "type": "Dispatcher",
-                "turn_message": "extra action"
-            }
-        },
-        {
-            "human_name": "MacRae",
-            "start_cards": ["taipei", "karachi"],
-            "character": {
-                "type": "QuarantineSpecialist",
-                "turn_message": "forecast and extra actions"
+                "type": "ContingencyPlanner",
+                "turn_message": ""
             }
         },
         {
             "human_name": "Anthony",
-            "start_cards": ["hongkong", "losangeles"],
+            "location": "atlanta",
+            "start_cards": [],
             "character": {
                 "type": "Medic",
-                "turn_message": "extra action and no fallen cities"
-            }
-        },
-        {
-            "human_name": "Benji",
-            "start_cards": ["istanbul", "essen"],
-            "character": {
-                "type": "Soldier",
-                "turn_message": "extra action"
+                "turn_message": ""
             }
         }
     ],
     "funded_events": [
+        {
+            "name": "resilientpopulation"
+        },
+        {
+            "name": "forecast"
+        },
+        {
+            "name": "airlift"
+        },
+        {
+            "name": "onequietnight"
+        },
+        {
+            "name": "governmentgrant"
+        },
+        {
+            "name": "improvedsanitation"
+        },
+        {
+            "name": "infectionzoneban"
+        },
+        {
+            "name": "sequencingbreakthrough"
+        }
     ],
     "cities": [
         {
             "name":    "sanfrancisco",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["losangeles", "tokyo", "manila", "chicago"]
         },
         {
             "name":    "washington",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["miami", "atlanta", "montreal", "newyork"]
         },
         {
             "name":    "atlanta",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["chicago", "washington", "miami"]
         },
         {
             "name":    "montreal",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["chicago", "newyork", "washington"]
         },
         {
             "name":    "chicago",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["montreal", "atlanta", "mexicocity", "losangeles", "sanfrancisco"]
         },
         {
             "name":    "newyork",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["montreal", "washington", "london", "madrid"]
         },
         {
             "name":    "london",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["newyork", "essen", "paris", "madrid"]
         },
         {
             "name":    "essen",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["london", "stpetersburg", "milan", "paris"]
         },
         {
             "name":    "stpetersburg",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["essen", "moscow", "istanbul"]
         },
         {
             "name":    "milan",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["paris", "essen", "istanbul"]
         },
         {
             "name":    "paris",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["madrid", "london", "essen", "milan", "algiers"]
         },
         {
             "name":    "madrid",
-            "disease": "Faded",
+            "disease": "Blue",
             "original_disease": "Blue",
             "neighbors": ["newyork", "london", "paris", "algiers", "saopaulo"]
         },
@@ -113,7 +123,7 @@
             "name":    "losangeles",
             "disease": "Yellow",
             "original_disease": "Yellow",
-            "neighbors": ["sanfrancisco", "chicago", "mexicocity", "lima", "sydney"]
+            "neighbors": ["sanfrancisco", "chicago", "mexicocity", "sydney"]
         },
         {
             "name":    "miami",
@@ -137,13 +147,13 @@
             "name":    "lima",
             "disease": "Yellow",
             "original_disease": "Yellow",
-            "neighbors": ["losangeles", "mexicocity", "bogota", "santiago"]
+            "neighbors": ["mexicocity", "bogota", "santiago"]
         },
         {
             "name":    "santiago",
             "disease": "Yellow",
             "original_disease": "Yellow",
-            "neighbors": ["lima", "buenosaires"]
+            "neighbors": ["lima"]
         },
         {
             "name":    "saopaulo",
@@ -155,7 +165,7 @@
             "name":    "buenosaires",
             "disease": "Yellow",
             "original_disease": "Yellow",
-            "neighbors": ["santiago", "bogota", "saopaulo", "johannesburg"]
+            "neighbors": ["bogota", "saopaulo"]
         },
         {
             "name":    "lagos",
@@ -179,7 +189,7 @@
             "name":    "johannesburg",
             "disease": "Yellow",
             "original_disease": "Yellow",
-            "neighbors": ["buenosaires", "kinshasa", "khartoum"]
+            "neighbors": ["kinshasa", "khartoum"]
         },
         {
             "name":    "algiers",
@@ -189,7 +199,7 @@
         },
         {
             "name":    "istanbul",
-            "disease": "Faded",
+            "disease": "Black",
             "original_disease": "Black",
             "neighbors": ["milan", "stpetersburg", "moscow", "baghdad", "cairo", "algiers"]
         },
@@ -213,7 +223,7 @@
         },
         {
             "name":    "moscow",
-            "disease": "Faded",
+            "disease": "Black",
             "original_disease": "Black",
             "neighbors": ["stpetersburg", "tehran", "istanbul"]
         },

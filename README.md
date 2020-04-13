@@ -1,6 +1,9 @@
-# Pandemic: Legacy stats collector
+Many thanks to https://github.com/anthonybishopric/pandemic-nerd-hurd for their amazing work
 
-Simple code that emits JSON files containing information about playthroughs. Can do some basic statistical analysis.
+# Pandemic & Pandemic: Legacy stats collector
+
+Simple code that emits JSON files containing information about playthroughs.
+Can do some basic statistical analysis.
 
 ## Running
 
@@ -23,3 +26,12 @@ _Features_
 _Code Fixes_
 * Keep pointers to actual epidemic and funded event cards in players / turns
 * BUG: current turn on loading a save file is not the correct pointer to a player.
+
+_2020-04-13_
+* Added API to receive commands
+* Added new Characters from the base game 
+* Game setup with hand player empty are now allowed, the card can be drawed in the UI
+* Implemented Outbreaks algorithm
+* Added Player location to the UI, and _move_ command
+* Remove special attributes from blue disease, hardcoded in code
+* Added a setup file for the original Pandemic board
