@@ -293,6 +293,23 @@ func (p *PandemicView) runStaticCommand(commandBuffer string, gameState *pandemi
 		}
 		player.SetLocation(cityName)
 		fmt.Fprintf(consoleView, "%v new location %v\n", player.HumanName, cityName)
+	case "character-location", "cl":
+		if len(commandArgs) != 3 {
+			fmt.Fprintln(consoleView, p.colorWarning("Usage: character-location[pl] <character-prefix> <city-prefix>"))
+			return nil
+		}
+		player, err := pandemic.GetPlayerByCharacter(commandArgs[1], gameState)
+		if err != nil {
+			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
+			break
+		}
+		cityName, err := pandemic.GetCityByPrefix(commandArgs[2], gameState)
+		if err != nil {
+			fmt.Fprintln(consoleView, p.colorWarning("%v", err))
+			break
+		}
+		player.SetLocation(cityName)
+		fmt.Fprintf(consoleView, "%v new location %v\n", player.HumanName, cityName)
 	case "move", "m":
 		if len(commandArgs) != 2 {
 			fmt.Fprintln(consoleView, p.colorWarning("move must be called with a city name"))

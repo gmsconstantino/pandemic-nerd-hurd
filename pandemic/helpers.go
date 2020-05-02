@@ -37,3 +37,17 @@ func GetPlayerByPrefix(entry string, gs *GameState) (*Player, error) {
 	}
 	return ret, nil
 }
+
+func GetPlayerByCharacter(entry string, gs *GameState) (*Player, error) {
+	var ret *Player
+	for _, player := range gs.GameTurns.PlayerOrder {
+		if strings.HasPrefix(strings.ToLower(string(player.Character.Type)), strings.ToLower(entry)) {
+			if ret != nil {
+				return nil, fmt.Errorf("%v is an ambiguous name", entry)
+			} else {
+				ret = player
+			}
+		}
+	}
+	return ret, nil
+}
