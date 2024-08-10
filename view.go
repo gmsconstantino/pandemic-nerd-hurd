@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"./pandemic"
-	"github.com/Sirupsen/logrus"
+	"github.com/gmsconstantino/pandemic-nerd-hurd/pandemic"
+	"github.com/sirupsen/logrus"
 	"github.com/fatih/color"
 	"github.com/jroimartin/gocui"
 )

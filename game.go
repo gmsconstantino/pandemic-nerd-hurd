@@ -4,11 +4,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"./pandemic"
-	"github.com/Sirupsen/logrus"
+	"github.com/gmsconstantino/pandemic-nerd-hurd/pandemic"
+	"github.com/sirupsen/logrus"
 	"github.com/jroimartin/gocui"
 
-	"gopkg.in/alecthomas/kingpin.v2"
+	"github.com/alecthomas/kingpin/v2"
 
 	"net/http"
 

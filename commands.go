@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"./pandemic"
+	"github.com/gmsconstantino/pandemic-nerd-hurd/pandemic"
 	"github.com/jroimartin/gocui"
 )
 

@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"./combinations"
+	"github.com/gmsconstantino/pandemic-nerd-hurd/pandemic/combinations"
 )
 
 const CityCardsPerTurn = 2

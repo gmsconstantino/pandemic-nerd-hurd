@@ -6,7 +6,7 @@ import (
 
 	"github.com/jroimartin/gocui"
 
-	"./pandemic"
+	"github.com/gmsconstantino/pandemic-nerd-hurd/pandemic"
 )
 
 // Index Root API handler
